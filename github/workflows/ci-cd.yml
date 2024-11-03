@@ -3,7 +3,7 @@ name: Deploy MERN App
 on:
   push:
     branches:
-      - main
+      - main-ec2-docker
 
 jobs:
   build:
