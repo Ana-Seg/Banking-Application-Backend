@@ -1,15 +1,16 @@
 FROM node:alpine3.18 AS build
 
 WORKDIR /app
-COPY client/package.json ./
+COPY package*.json ./
 RUN npm install
-COPY client/ ./
+COPY . .
 RUN npm run build
 
-
 FROM nginx:1.23-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf *
-COPY --from=buld /app/dist .
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
+
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+
