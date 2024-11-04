@@ -26,7 +26,7 @@ jobs:
       run: docker build -t anaseg/banking-application:frontend ./client
 
     - name: Publish Frontend Image to Docker Hub
-      run: docker push anaseg/banking-application:frontend  . --build-arg BACKEND_URL=${{ secrets.BACKEND_URL }}
+      run: docker push anaseg/banking-application:frontend  --build-arg VITE_REACT_APP_BACKEND_BASEURL='${{ secrets.VITE_REACT_APP_BACKEND_BASEURL }}' .
 
   deploy:
     needs: build
@@ -39,6 +39,6 @@ jobs:
 
       - name: Run Docker Container
         run: |
-          docker run -d -p 4000:4000 --name banking-application-backend anaseg/banking-application:backend -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' Banking-Application/server
-          docker run -d -p 3000:3000 --name banking-application-frontend anaseg/banking-application:frontend
+          docker run -d -p 4000:4000 --name banking-application-backend anaseg/banking-application:backend -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}' anaseg/banking-application
+          docker run -d -p 3000:80 --name banking-application-frontend anaseg/banking-application:frontend anaseg/banking-application
 
