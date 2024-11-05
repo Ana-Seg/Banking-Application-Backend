@@ -48,6 +48,7 @@ jobs:
           -e MONGO_URI='${{secrets.MONGO_URI}}' \
           -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
           -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+          -e PORT=4000 \
            anaseg/banking-application:backend
 
       - name: Stop and Remove Old Frontend Container
