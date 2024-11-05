@@ -37,8 +37,27 @@ jobs:
           docker pull anaseg/banking-application:backend
           docker pull anaseg/banking-application:frontend
 
-      - name: Run Docker Container
+      - name: Stop and Remove Old Backend Container
         run: |
-          docker run -d -p 4000:4000 --name banking-application-backend anaseg/banking-application:backend -e MONGO_PASSWORD='${{secrets.MONGO_PASSWORD}}'
-          docker run -d -p 3000:80 --name banking-application-frontend anaseg/banking-application:frontend
+          docker stop banking-application-backend || true
+          docker rm banking-application-backend || true
+
+      - name: Run Docker Container for Backend
+        run: |
+          docker run -d -p 4000:4000 --name banking-application-backend \
+          -e MONGO_URI='${{secrets.MONGO_URI}}' \
+          -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+          -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+           anaseg/banking-application:backend
+
+      - name: Stop and Remove Old Frontend Container
+        run: |
+          docker stop banking-application-frontend || true
+          docker rm banking-application-frontend || true
+
+      - name: Run Docker Container for Frontend
+        run: |
+          docker run -d -p 3000:80 --name banking-application-frontend \
+          -e REACT_APP_BACKEND_URL="${{ secrets.BACKEND_URL }}" \
+          anaseg/banking-application:frontend
 
