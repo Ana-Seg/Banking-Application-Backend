@@ -59,7 +59,7 @@ app.get('/users', auth, isAdmin, async (req, res) => {
     }
 });
 
-app.listen(process.env.PORT, () =>
+app.listen(process.env.PORT, '0.0.0.0', () =>
     console.log(`Server running on ${process.env.PORT} PORT`)
 );
 
