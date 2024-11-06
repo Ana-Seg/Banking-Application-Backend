@@ -19,6 +19,10 @@ mongoose
     .then(() => console.log('Database is connected'))
     .catch((error) => console.log(error));
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the BadBank API!');
+});
+
 app.use('/auth', authRouter);
 
 app.use('/api/transactions', transactionRouter);
@@ -45,13 +49,10 @@ app.get('/user', auth, async (req, res) => {
 
 app.get('/users', auth, isAdmin, async (req, res) => {
     try {
-
         const users = await User.find().select('-password');
-
         if (!users || users.length === 0) {
             return res.status(404).json({ msg: 'No users found' });
         }
-
         res.json(users);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -59,11 +60,12 @@ app.get('/users', auth, isAdmin, async (req, res) => {
     }
 });
 
+app.all('*', (req, res) => {
+    res.status(404).json({ msg: 'Route not found' });
+});
+
 app.listen(process.env.PORT, '0.0.0.0', () =>
     console.log(`Server running on ${process.env.PORT} PORT`)
 );
-
-
-
 
 
