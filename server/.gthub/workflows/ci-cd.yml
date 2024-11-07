@@ -1,4 +1,4 @@
-name: Deploy MERN App
+name: Backend CI/CD
 
 on:
   push:
@@ -10,37 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Source
+    - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Log in to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Docker Image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/banking-application:backend .
+    - name: Build Docker Image for Backend
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest .
 
-    - name: Publish Backend Image to Docker Hub
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/banking-application:backend
+    - name: Push Docker Image to Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
   deploy:
     needs: build
     runs-on: self-hosted[server]
+
     steps:
-      - name: Pull image from Docker Hub
-        run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/banking-application:backend
+    - name: Pull Docker Image from Docker Hub
+      run: docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
-      - name: Stop and Remove Old Backend Container
-        run: |
-          docker stop banking-application-backend || true
-          docker rm banking-application-backend || true
+    - name: Stop Existing Backend Container
+      run: |
+        docker stop banking-application-backend || true
+        docker rm banking-application-backend || true
 
-      - name: Run Docker Container
-        run: |
-          docker run -d -p 4000:4000 --name banking-application-backend \
-          -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-          -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-          -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
-          ${{ secrets.DOCKER_USERNAME }}/banking-application:backend
+    - name: Run Backend Docker Container
+      run: |
+        docker run -d -p 5000:5000 --name banking-application-backend \
+          -e MONGO_URI="${{ secrets.MONGO_URI }}" \
+          -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
 
 
