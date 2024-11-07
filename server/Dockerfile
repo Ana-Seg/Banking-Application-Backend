@@ -1,8 +1,10 @@
-FROM node:alpine3.18
+
+FROM node:16-alpine3.18
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
+
 RUN npm install
 
 COPY . .
