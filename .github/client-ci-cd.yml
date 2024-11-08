@@ -1,0 +1,42 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker Image for Frontend
+      run: docker build -t anaseg/banking-application:frontend ./client
+
+    - name: Push Docker Image to Docker Hub
+      run: docker push anaseg/banking-application:frontend
+
+  deploy:
+    needs: build
+    runs-on: self-hosted[client]
+
+    steps:
+    - name: Pull Docker Image from Docker Hub
+      run: docker pull anaseg/banking-application:frontend
+
+    - name: Stop Existing Frontend Container
+      run: |
+        docker stop banking-application-frontend || true
+        docker rm banking-application-frontend || true
+
+    - name: Run Frontend Docker Container
+      run: |
+        docker run -d -p 80:80 --name banking-application-frontend \
+          -e BACKEND_URL="${{ secrets.BACKEND_URL }}" \
+           anaseg/banking-application:frontend
