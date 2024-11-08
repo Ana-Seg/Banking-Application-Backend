@@ -17,10 +17,10 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker Image for Frontend
-      run: docker build -t anaseg/banking-application:frontend ./client
+      run: docker build -t anaseg/banking-application:frontend-latest ./client
 
     - name: Push Docker Image to Docker Hub
-      run: docker push anaseg/banking-application:frontend
+      run: docker push anaseg/banking-application:frontend-latest
 
   deploy:
     needs: build
@@ -28,7 +28,7 @@ jobs:
 
     steps:
     - name: Pull Docker Image from Docker Hub
-      run: docker pull anaseg/banking-application:frontend
+      run: docker pull anaseg/banking-application:frontend-latest
 
     - name: Stop Existing Frontend Container
       run: |
@@ -39,4 +39,4 @@ jobs:
       run: |
         docker run -d -p 80:80 --name banking-application-frontend \
           -e BACKEND_URL="${{ secrets.BACKEND_URL }}" \
-           anaseg/banking-application:frontend
+           anaseg/banking-application:frontend-latest
