@@ -26,6 +26,7 @@ jobs:
     needs: build
     runs-on: self-hosted
 
+
     steps:
     - name: Pull Docker Image from Docker Hub
       run: docker pull anaseg/banking-application:backend-latest
