@@ -37,4 +37,8 @@ jobs:
       - name: Run Backend Docker Container
         run: |
          docker run -d -p 4000:4000 --name banking-application-backend \
-          anaseg/banking-application:backend
+         -e MONGO_URI=${{ secrets.MONGO_URI }} \
+         -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+         -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+         -e PORT=4000 \
+          anaseg/banking-application:backend-latest
