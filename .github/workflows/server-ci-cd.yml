@@ -38,7 +38,7 @@ jobs:
         run: |
          docker run -d -p 4000:4000 --name banking-application-backend \
          -e MONGO_URI=${{ secrets.MONGO_URI }} \
-         anaseg/banking-application:backend-latest
+         banking-application:backend-latest
 
 
 
