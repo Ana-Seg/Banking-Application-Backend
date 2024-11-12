@@ -28,14 +28,19 @@ jobs:
     steps:
       - name: Pull Docker Image from Docker Hub
         run: docker pull anaseg/banking-application:backend-latest
+
       - name: Stop Existing Backend Container
         run: |
          docker stop banking-application-backend || true
          docker rm banking-application-backend || true
+
       - name: Run Backend Docker Container
         run: |
-         docker run -d -p 4000:4000 --name banking-application-backend e- MONGO_URI='{{ secrets.MONGO_URI }}'
+         docker run -d -p 3000:3000 --name banking-application-backend \
+         -e MONGO_URI=${{ secrets.MONGO_URI }} \
          anaseg/banking-application:backend-latest
+
+
 
 
 
