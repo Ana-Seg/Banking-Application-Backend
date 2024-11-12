@@ -43,4 +43,4 @@ jobs:
           -e PORT=4000 \
           anaseg/banking-application:backend-latest
 
-          anaseg/banking-application:backend-latest
+
