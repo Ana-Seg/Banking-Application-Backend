@@ -20,7 +20,7 @@ mongoose
     .catch((error) => console.log(error));
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the BadBank API!');
+    res.send('Welcome to BadBank API!');
 });
 
 app.use('/auth', authRouter);
