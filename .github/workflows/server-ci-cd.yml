@@ -29,10 +29,12 @@ jobs:
       - name: Pull Docker Image from Docker Hub
         run: docker pull anaseg/banking-application:backend-latest
 
-      - name: Stop Existing Backend Container
+      - name: Stop and Remove Existing Backend Container
         run: |
-          docker stop banking-application:backend-latest || echo "No existing backend container found"
-          docker rm banking-application:backend-latest || echo "No existing backend container found"
+          # Stop the container if it is running
+          docker stop banking-application-backend-latest || echo "No running container found"
+          # Remove the container (even if stopped) to ensure a clean start
+          docker rm banking-application-backend-latest || echo "No container to remove"
 
       - name: Run Backend Docker Container
         run: |
@@ -42,6 +44,7 @@ jobs:
           -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
           -e PORT=4000 \
           anaseg/banking-application:backend-latest
+
 
 
 
