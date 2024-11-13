@@ -17,22 +17,22 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker Image for Backend
-      run: docker build -t anaseg/banking-application-backend-latest .
+      run: docker build -t anaseg/banking-application:backend-latest .
 
     - name: Push Docker Image to Docker Hub
-      run: docker push anaseg/banking-application-backend-latest
+      run: docker push anaseg/banking-application:backend-latest
 
   deploy:
     needs: build
     runs-on: self-hosted
     steps:
       - name: Pull Docker Image from Docker Hub
-        run: docker pull anaseg/banking-application-backend-latest
+        run: docker pull anaseg/banking-application:backend-latest
 
       - name: Stop Existing Backend Container
         run: |
-          docker stop banking-application-backend || echo "No existing backend container found"
-          docker rm banking-application-backend || echo "No existing backend container found"
+          docker stop banking-application:backend-latest || echo "No existing backend container found"
+          docker rm banking-application:backend-latest || echo "No existing backend container found"
 
       - name: Run Backend Docker Container
         run: |
@@ -41,7 +41,7 @@ jobs:
           -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
           -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
           -e PORT=4000 \
-          anaseg/banking-application-backend-latest
+          anaseg/banking-application:backend-latest
 
 
 
