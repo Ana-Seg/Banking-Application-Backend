@@ -11,7 +11,11 @@ config();
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+app.use(cors({ origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+ }));
+
 app.use(express.json());
 
 mongoose
