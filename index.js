@@ -11,10 +11,13 @@ config();
 
 const app = express();
 
-app.options('*', cors({ origin: process.env.FRONTEND_URL,
+const corsOptions = {
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowHeaders: ['Content-Type', 'Authorization'],
- }));
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -28,7 +31,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', authRouter);
-
 app.use('/api/transactions', transactionRouter);
 
 const isAdmin = (req, res, next) => {
@@ -71,5 +73,6 @@ app.all('*', (req, res) => {
 app.listen(process.env.PORT, '0.0.0.0', () =>
     console.log(`Server running on ${process.env.PORT} PORT`)
 );
+
 
 
